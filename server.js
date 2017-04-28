@@ -1,6 +1,15 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
+import mongoose from 'mongoose'
+
+mongoose.connect('mongodb://localhost/crispyScrum')
+const db = mongoose.connection
+
+db.on('error', () => console.log('could not connect to db...'))
+db.once('open', () => {
+  console.log('connected to db...')
+})
 
 const app = express()
 const port = 9004
