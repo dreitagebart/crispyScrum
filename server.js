@@ -2,6 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import mongoose from 'mongoose'
+import api from './src/api'
 
 mongoose.connect('mongodb://localhost/crispyScrum')
 const db = mongoose.connection
@@ -15,6 +16,8 @@ const app = express()
 const port = 9004
 
 app.use(bodyParser.json())
+
+app.use('/', api)
 
 app.use('/', express.static(path.join(__dirname, 'src', 'public')))
 
