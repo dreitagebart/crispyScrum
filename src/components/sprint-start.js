@@ -2,8 +2,6 @@ import React from 'react'
 import moment from 'moment'
 import { Modal, DatePicker, Button, Form, Input, Row, Col } from 'antd'
 
-moment.locale('en')
-
 const FormItem = Form.Item
 
 class WrappedSprint extends React.Component {

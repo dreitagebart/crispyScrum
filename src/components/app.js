@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import styles from '../styles'
+import moment from 'moment'
 import createHistory from 'history/createBrowserHistory'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { TaskUpdate, User, Task, Board, BoardCreate, Backlog, Start, Boards, About, Teams, Users, UserCreate, Sprint, SprintCreate, Admin } from '../views'
@@ -12,6 +13,8 @@ import { connect } from 'react-redux'
 import * as constants from '../constants'
 import 'antd/dist/antd.css'
 import '../styles/app.css'
+
+moment.locale('en')
 
 const history = createHistory()
 const { Content, Footer, Sider } = Layout

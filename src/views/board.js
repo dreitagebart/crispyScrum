@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import { boardSelect, sprintStart } from '../actions'
-import { Button, Col, Row, Form, Input } from 'antd'
+import { Menu, Dropdown, Icon, Button, Col, Row, Form, Input } from 'antd'
 import * as constants from '../constants'
 import { SprintStart } from '../components'
 
@@ -29,6 +29,14 @@ export class Board extends React.Component {
   render () {
     const { board, sprint } = this.props
 
+    const menu = (
+      <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key="1">1st menu item</Menu.Item>
+        <Menu.Item key="2">2nd menu item</Menu.Item>
+        <Menu.Item key="3">3d menu item</Menu.Item>
+      </Menu>
+    )
+
     return (
       <div>
         <SprintStart visible={this.state.visible} onClose={() => this.setState({ visible: false })} onConfirm={data => {
@@ -36,7 +44,16 @@ export class Board extends React.Component {
           this.props.dispatch(sprintStart(sprint))
         }} />
         <Row class='item'>
-          <Col><h1>Board {board.title}</h1></Col>
+          <Col span={20}>
+            <h1>Board {board.title}</h1>
+          </Col>
+          <Col span={4} style={{ textAlign: 'right' }}>
+            <Dropdown overlay={menu}>
+              <Button style={{ marginLeft: 8 }}>
+                <Icon size='large' type='appstore' /> <Icon type='down' />
+              </Button>
+            </Dropdown>
+          </Col>
         </Row>
         <Row class='item'>
           <Col><h4>There is currently {sprint ? 'sprint ' + sprint.name : 'no sprint'} running</h4></Col>
@@ -46,6 +63,10 @@ export class Board extends React.Component {
         </Row>
       </div>
     )
+  }
+
+  _handleMenuClick = e => {
+    debugger
   }
 }
 

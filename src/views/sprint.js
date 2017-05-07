@@ -4,7 +4,7 @@ import React from 'react'
 import update from 'react/lib/update'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { connect } from 'react-redux'
-import { Steps, Button, Icon, Card, Row, Col } from 'antd'
+import { Dropdown, Menu, Steps, Button, Icon, Card, Row, Col } from 'antd'
 import { DragDropContext } from 'react-dnd'
 import { Swimlane, TaskDrag } from '../components'
 import { taskUpdate, sprintFilter, sprintFilterShowAll } from '../actions'
@@ -67,14 +67,27 @@ export class Sprint extends React.Component {
 
     const parsedEnd = moment(sprint.end).fromNow()
 
+    const menu = (
+      <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key="1">1st menu item</Menu.Item>
+        <Menu.Item key="2">2nd menu item</Menu.Item>
+        <Menu.Item key="3">3d menu item</Menu.Item>
+      </Menu>
+    )
+
     return (
       <div>
         <Row class='item' align='middle'>
-          <Col span={16}>
+          <Col span={20}>
             <h1>Sprint {sprint.name}</h1>
-          </Col>
-          <Col span={8} style={{ textAlign: 'right' }}>
             <span style={{ fontSize: 16 }}><Icon type='calendar' /> ends {parsedEnd}</span>
+          </Col>
+          <Col span={4} style={{ textAlign: 'right' }}>
+            <Dropdown overlay={menu}>
+              <Button style={{ marginLeft: 8 }}>
+                <Icon size='large' type='appstore' /> <Icon type='down' />
+              </Button>
+            </Dropdown>
           </Col>
         </Row>
         <Row class='item'>
