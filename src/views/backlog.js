@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
 import { Table, Button, Row, Col } from 'antd'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 @connect((store, props) => {
-  const { tasks } = store
+  const { tasks } = store.root
   return {
     tasks
   }
@@ -21,7 +22,11 @@ export class Backlog extends React.Component {
   }
 
   render () {
-    const { tasks } = this.props
+    let { tasks } = this.props
+    tasks = _.map(tasks, task => {
+      return {...task, key: task._id}
+    })
+
     let { sortedInfo, filteredInfo } = this.state
     sortedInfo = sortedInfo || {}
     filteredInfo = filteredInfo || {}
@@ -30,32 +35,28 @@ export class Backlog extends React.Component {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
+      render: (text, record) => (
+        <a href='#'>{record.title}</a>
+      ),
       onCellClick: this._handleCellClick,
-      filters: [
-        { text: 'Joe', value: 'Joe' },
-        { text: 'Jim', value: 'Jim' }
-      ],
-      filteredValue: filteredInfo.title || null,
-      onFilter: (value, record) => record.title.includes(value),
+      // filters: [
+      //   { text: 'Joe', value: 'Joe' },
+      //   { text: 'Jim', value: 'Jim' }
+      // ],
+      // filteredValue: filteredInfo.title || null,
+      // onFilter: (value, record) => record.title.includes(value),
       sorter: (a, b) => a.title.length - b.title.length,
       sortOrder: sortedInfo.columnKey === 'title' && sortedInfo.order
     }]
 
     return (
       <div>
-        <Row>
+        <Row style={{ marginBottom: 20 }}>
           <Col span={24}><h1>Backlog</h1></Col>
         </Row>
         <Row>
-          <Col span={24}>
-            <div>
-              <div className="table-operations">
-                <Button onClick={this._setTitleSort}>Sort title</Button>
-                <Button onClick={this._clearFilters}>Clear filters</Button>
-                <Button onClick={this._clearAll}>Clear filters and sorters</Button>
-              </div>
-              <Table columns={columns} dataSource={tasks} onChange={this._handleChange} />
-            </div>
+          <Col>
+            <Table columns={columns} dataSource={tasks} onChange={this._handleChange} />
           </Col>
         </Row>
       </div>
@@ -83,7 +84,7 @@ export class Backlog extends React.Component {
   }
 
   _handleCellClick = record => {
-    this.props.history.push('/task/' + record._id)
+    this.props.history.push('/update/task/' + record._id)
   }
 
   _handleChange = (pagination, filters, sorter) => {

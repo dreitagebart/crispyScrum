@@ -3,7 +3,16 @@ body {
 }
 
 .logo {
-  width: 100px;
-  height: 20px;
-  background-color: #cfcfcf;
+  font-size: 64px;
+  text-align: center;
+  color: #fff;
+  background-color: #111;
+}
+
+.swimlaneHeader {
+  border-bottom: 4px solid #efefef;
+}
+
+.item {
+  margin-bottom: 20px;
 }

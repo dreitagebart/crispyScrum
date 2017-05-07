@@ -6,7 +6,12 @@ const schema = mongoose.Schema({
   descr: String,
   days: Number,
   hours: Number,
-  minutes: Number
+  minutes: Number,
+  contact: [String],
+  sprint: String,
+  assignee: String,
+  lane: Number,
+  board: String
 })
 
 export const Task = mongoose.model('Task', schema)

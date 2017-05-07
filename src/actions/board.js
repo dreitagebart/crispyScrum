@@ -1,6 +1,7 @@
 import axios from 'axios'
 import * as constants from '../constants'
 import { appLoading, appLoaded, notify } from './'
+import { push } from 'react-router-redux'
 
 export const boardFetch = () => {
   return dispatch => {
@@ -31,7 +32,7 @@ export const boardCreate = board => {
         dispatch(appLoaded())
       })
       .catch(error => {
-        dispatch(boardError({
+        dispatch(notify({
           type: constants.MESSAGE.error,
           title: error.message
         }))
@@ -51,5 +52,32 @@ export const boardReceived = sprints => {
   return {
     type: constants.ACTIONS.boardReceived,
     payload: sprints
+  }
+}
+
+export const boardSelect = (user, board) => {
+  // return {
+  //   type: constants.ACTIONS.boardSelect,
+  //   payload: { board, user }
+  // }
+  return dispatch => {
+    const select = {
+      user,
+      board
+    }
+    axios.post('http://localhost:9004/api/select/board', select)
+      .then(res => {
+        dispatch({
+          type: constants.ACTIONS.boardSelect,
+          payload: { board, user }
+        })
+      })
+      .catch(error => {
+        dispatch(notify({
+          type: constants.MESSAGE.error,
+          title: error.message
+        }))
+        dispatch(appLoaded())
+      })
   }
 }

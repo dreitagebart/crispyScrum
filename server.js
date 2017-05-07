@@ -16,10 +16,16 @@ const app = express()
 const port = 9004
 
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
 
 app.use('/', api)
 
 app.use('/', express.static(path.join(__dirname, 'src', 'public')))
+
+app.get('/callback', function (req, res) {
+  console.log(req.query)
+  res.end(JSON.stringify(req.query, null, 2))
+})
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'public', 'app.html'))

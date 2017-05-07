@@ -53,3 +53,31 @@ export const taskCreated = task => {
     payload: task
   }
 }
+
+export const taskUpdate = (query, update, callback) => {
+  const data = {
+    query,
+    update
+  }
+  return dispatch => {
+    axios.put('http://localhost:9004/api/task/', data)
+      .then(res => {
+        dispatch({
+          type: constants.ACTIONS.taskUpdated,
+          payload: data
+        })
+        dispatch(notify({
+          type: constants.MESSAGE.success,
+          title: 'Task updated'
+        }))
+
+        if (callback) callback()
+      })
+      .catch(error => {
+        dispatch(notify({
+          type: constants.MESSAGE.error,
+          title: error.message
+        }))
+      })
+  }
+}

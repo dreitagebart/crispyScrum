@@ -5,24 +5,15 @@ import { boardCreate } from '../actions'
 import { Button, Col, Row, Form, Input } from 'antd'
 
 @connect((store, props) => {
-  const { tasks } = store
+  const { tasks } = store.root
   return {
-    tasks
+    task: _.find(props.tasks, { _id: props.match.params.id })
   }
 })
 
 export class Task extends React.Component {
-  constructor (props) {
-    super(props)
-    const task = _.find(props.tasks, { _id: props.match.params.id })
-
-    this.state = {
-      task
-    }
-  }
-
   render () {
-    const { task } = this.state
+    const { task } = this.props
     return (
       <div>
         <Row>

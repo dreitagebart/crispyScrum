@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { Router } from 'express'
 import { Sprint, Task, Board, User } from '../models'
 
@@ -36,9 +37,7 @@ api.get('/api/sprint/:id', (req, res) => {
 })
 
 api.post('/api/sprint', (req, res) => {
-  const sprintPost = new Sprint({
-    name: req.body.name
-  })
+  const sprintPost = new Sprint(req.body)
 
   sprintPost.save((error, response) => {
     if (error) {
@@ -50,7 +49,8 @@ api.post('/api/sprint', (req, res) => {
 })
 
 api.post('/api/user', (req, res) => {
-  const { mail, user, first, last, descr, interests, isAdmin, born } = req.body
+  const { mail, user, first, last, descr, interests, isAdmin, born, avatar } = req.body
+
   const userPost = new User({
     mail,
     user,
@@ -59,7 +59,8 @@ api.post('/api/user', (req, res) => {
     descr,
     interests,
     isAdmin,
-    born
+    born,
+    avatar
   })
 
   userPost.save((error, response) => {
@@ -68,6 +69,15 @@ api.post('/api/user', (req, res) => {
       return res.send(error)
     }
     return res.send(response)
+  })
+})
+
+api.post('/api/select/board', (req, res) => {
+  const { user, board } = req.body
+  const query = { _id: user }
+  User.findOneAndUpdate(query, { board }, (error, response) => {
+    if (error) return res.json(error)
+    return res.json(response)
   })
 })
 
@@ -94,24 +104,26 @@ api.put('/api/sprint/:id', (req, res) => {
   })
 })
 
-api.put('/api/task/:id', (req, res) => {
+api.put('/api/board', (req, res) => {
   const query = { _id: req.params.id }
-  Task.findOneAndUpdate(query, { name: req.body.name }, (error, response) => {
+
+  Board.findOneAndUpdate(query, req.params.update, (error, response) => {
+    if (error) return res.json(error)
+    return res.json(response)
+  })
+})
+
+api.put('/api/task/', (req, res) => {
+  let query = req.body.query
+  let update = req.body.update
+  Task.findOneAndUpdate(query, update, (error, response) => {
     if (error) return res.json(error)
     return res.json(response)
   })
 })
 
 api.post('/api/task', (req, res) => {
-  const { type, title, descr, days, hours, minutes } = req.body
-  const taskPost = new Task({
-    type,
-    title,
-    descr,
-    days,
-    hours,
-    minutes
-  })
+  const taskPost = new Task(req.body)
 
   taskPost.save((error, response) => {
     if (error) {

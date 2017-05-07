@@ -7,7 +7,7 @@ import { notify } from '../actions'
 import * as constants from '../constants'
 
 @connect((store, props) => {
-  const { boards } = store
+  const { boards } = store.root
   return {
     boards
   }
