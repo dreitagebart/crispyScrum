@@ -3,8 +3,7 @@ body {
 }
 
 .logo {
-  font-size: 64px;
-  text-align: center;
+  cursor: pointer;
   color: #fff;
   background-color: #111;
 }
@@ -15,4 +14,34 @@ body {
 
 .item {
   margin-bottom: 20px;
+}
+
+.Aligner {
+  display: flex;
+  align-items: center;
+  min-height: 2em;
+  justify-content: center;
+}
+
+.Aligner-item {
+  flex: 1;
+}
+
+.Aligner-item--top {
+  align-self: flex-start;
+}
+
+.Aligner-item--bottom {
+  align-self: flex-end;
+}
+
+.Aligner-item--fixed {
+  flex: none;
+  max-width: 50%;
+}
+
+.header-line {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #efefef;
 }

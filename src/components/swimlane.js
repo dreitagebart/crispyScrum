@@ -16,11 +16,11 @@ const swimlaneTarget = {
 
 export class Swimlane extends React.Component {
   static propTypes = {
-    tasks: PropTypes.arrayOf(PropTypes.string),
+    tasks: PropTypes.arrayOf(PropTypes.object),
     type: PropTypes.number.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool.isRequired,
-    canDrop: PropTypes.bool.isRequired,
+    connectDropTarget: PropTypes.func,
+    isOver: PropTypes.bool,
+    canDrop: PropTypes.bool,
     accepts: PropTypes.arrayOf(PropTypes.string).isRequired,
     lastDroppedItem: PropTypes.object,
     onDrop: PropTypes.func.isRequired

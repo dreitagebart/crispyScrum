@@ -1,8 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
-import { Table, Button, Row, Col } from 'antd'
+import { Icon, Table, Button, Row, Col } from 'antd'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import * as constants from '../constants'
 
 @connect((store, props) => {
   const { tasks } = store.root
@@ -51,8 +52,10 @@ export class Backlog extends React.Component {
 
     return (
       <div>
-        <Row style={{ marginBottom: 20 }}>
-          <Col span={24}><h1>Backlog</h1></Col>
+        <Row class='item'>
+          <Col span={20}>
+            <h1 class='header-line'><Icon type={constants.ICONS.Backlog} /> BACKLOG</h1>
+          </Col>
         </Row>
         <Row>
           <Col>

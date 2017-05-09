@@ -28,7 +28,7 @@ export const taskReceived = tasks => {
   }
 }
 
-export const taskCreate = task => {
+export const taskCreate = (task, shouldNotify) => {
   return dispatch => {
     dispatch(appLoading())
     axios
@@ -36,6 +36,12 @@ export const taskCreate = task => {
       .then(res => {
         dispatch(taskCreated(res.data))
         dispatch(appLoaded())
+        if (shouldNotify) {
+          dispatch(notify({
+            type: constants.MESSAGE.success,
+            title: 'Task successfully created'
+          }))
+        }
       })
       .catch(error => {
         dispatch(notify({

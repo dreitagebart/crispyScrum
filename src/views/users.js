@@ -1,8 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
-import { Table, Row, Col, Button, Card } from 'antd'
+import { Menu, Dropdown, Icon, Table, Row, Col, Button, Card } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import * as constants from '../constants'
 
 const getAge = born => {
   debugger
@@ -57,16 +58,35 @@ const columns = [{
 export class Users extends React.Component {
   render () {
     const { users } = this.props
+
+    const menu = (
+      <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key='1'>create new user</Menu.Item>
+      </Menu>
+    )
+
     return (
       <div>
         <Row class='item'>
-          <Col span={20}><h1>Users</h1></Col>
-          <Col span={4} style={{ textAlign: 'right' }}><Button onClick={() => this.props.history.push('/create/user')} type='primary'>create user</Button></Col>
+          <Col span={20}>
+            <h1 class='header-line'><Icon type={constants.ICONS.user} /> USERS</h1>
+          </Col>
+          <Col span={4} style={{ textAlign: 'right' }}>
+            <Dropdown overlay={menu}>
+              <Button style={{ marginLeft: 8 }}>
+                <Icon size='large' type={constants.ICONS.menu} /> <Icon type='down' />
+              </Button>
+            </Dropdown>
+          </Col>
         </Row>
         <Row>
           <Table rowKey='_id' columns={columns} dataSource={users} />
         </Row>
       </div>
     )
+  }
+
+  _handleMenuClick = e => {
+    if (e.key === '1') return this.props.history.push('/create/user')
   }
 }

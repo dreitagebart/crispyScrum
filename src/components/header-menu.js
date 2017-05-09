@@ -23,7 +23,6 @@ export class HeaderMenu extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      taskTitle: 'create new task',
       taskType: constants.TASK.types.incident,
       taskModal: false,
       collapsed: false,
@@ -32,31 +31,25 @@ export class HeaderMenu extends React.Component {
   }
 
   _handleTaskClick = type => {
-    debugger
-    let taskTitle
     let taskType
-   
+  
     switch (type) {
       case constants.TASK.types.epic: {
         taskType = type
-        taskTitle = 'create new EPIC'
         break
       }
       case constants.TASK.types.incident: {
         taskType = type
-        taskTitle = 'create new INCIDENT'
         break
       }
       case constants.TASK.types.meeting: {
         taskType = type
-        taskTitle = 'create new MEETING'
         break
       }
     }
 
     this.setState({
       taskType,
-      taskTitle,
       taskModal: true
     })
   }
@@ -66,46 +59,48 @@ export class HeaderMenu extends React.Component {
 
     return (
       <div>
-        <TaskModal closeFn={() => this.setState({ taskModal: false })} title={this.state.taskTitle} type={this.state.taskType} visible={this.state.taskModal} />
+        <TaskModal onClose={() => this.setState({ taskModal: false })} title={this.state.taskTitle} type={this.state.taskType} onTypeSwitch={type => this.setState({ taskType: type })} visible={this.state.taskModal} />
         <Header style={{ backgroundColor: '#efefef', padding: 0 }}>
           <Menu mode='horizontal' style={{ fontSize: 16 }}>
-            <SubMenu title={<span><Icon type='schedule' /> BOARDS </span>}>
+            <SubMenu title={<span><Icon type={constants.ICONS.board} /> BOARDS </span>}>
               <MenuItemGroup title='choose your board'>
                 {_.map(boards, board => {
                   return (
                     <Menu.Item key={board._id}>
                       <a onClick={() => {
-                        debugger
                         this.props.history.push('/board/' + board._id)
                         this.props.dispatch(boardSelect(user._id, board._id))
                       }}>{board.title}</a>
                     </Menu.Item>
                   )
                 })}
+                <Menu.Item>
+                  <a onClick={() => this.props.history.push('/boards')}><span style={{ fontWeight: 'bold' }}><Icon type={constants.ICONS.boardIndex} />BOARD INDEX</span></a>
+                </Menu.Item>
               </MenuItemGroup>
             </SubMenu>
             <Menu.Item key='backlog'>
               <a onClick={() => this.props.history.push('/backlog')}>
-                <Icon type='inbox' /> BACKLOG
+                <Icon type={constants.ICONS.backlog} /> BACKLOG
               </a>
             </Menu.Item>
-            <SubMenu title={<span><Icon type='bars' />TASK</span>}>
+            <SubMenu title={<span><Icon type={constants.ICONS.task} />TASK</span>}>
               <MenuItemGroup title='create task'>
                 <Menu.Item>
                   <a onClick={() => this._handleTaskClick(constants.TASK.types.incident)}>
-                    <Icon type='exception' />
+                    <Icon type={constants.ICONS.incident} />
                     <span class='nav-text'>Incident</span>
                   </a>
                 </Menu.Item>
                 <Menu.Item>
                   <a onClick={() => this._handleTaskClick(constants.TASK.types.meeting)}>
-                    <Icon type='flag' />
+                    <Icon type={constants.ICONS.meeting} />
                     <span class='nav-text'>Meeting</span>
                   </a>
                 </Menu.Item>
                 <Menu.Item>
                   <a onClick={() => this._handleTaskClick(constants.TASK.types.epic)}>
-                    <Icon type='trophy' />
+                    <Icon type={constants.ICONS.epic} />
                     <span class='nav-text'>Epic</span>
                   </a>
                 </Menu.Item>

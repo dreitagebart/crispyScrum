@@ -48,7 +48,6 @@ export class Admin extends React.Component {
 
   createTask = type => {
     _.times(1, () => {
-      debugger
       const board = faker.random.arrayElement(this.props.boardKeys)
       const assignee = faker.random.arrayElement(this.props.userKeys)
       let taskPost = {

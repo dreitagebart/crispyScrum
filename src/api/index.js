@@ -82,10 +82,7 @@ api.post('/api/select/board', (req, res) => {
 })
 
 api.post('/api/board', (req, res) => {
-  const boardPost = new Board({
-    title: req.body.title,
-    descr: req.body.descr
-  })
+  const boardPost = new Board(req.body)
 
   boardPost.save((error, response) => {
     if (error) {
@@ -105,9 +102,10 @@ api.put('/api/sprint/:id', (req, res) => {
 })
 
 api.put('/api/board', (req, res) => {
-  const query = { _id: req.params.id }
+  let query = req.body.query
+  let update = req.body.update
 
-  Board.findOneAndUpdate(query, req.params.update, (error, response) => {
+  Board.findOneAndUpdate(query, update, (error, response) => {
     if (error) return res.json(error)
     return res.json(response)
   })

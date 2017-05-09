@@ -1,39 +1,51 @@
 import _ from 'lodash'
 import React from 'react'
-import { Card, Button, Icon, Row, Col } from 'antd'
+import { Card, Dropdown, Menu, Button, Icon, Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { notify } from '../actions'
+import { boardSelect } from '../actions'
 import * as constants from '../constants'
 
 @connect((store, props) => {
-  const { boards } = store.root
+  const { boards, currentUser } = store.root
   return {
+    currentUser,
     boards
   }
 })
 
 export class Boards extends React.Component {
   render () {
-    const { boards } = this.props
+    const { boards, currentUser } = this.props
+    
+    const menu = (
+      <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key='1'>create new board</Menu.Item>
+      </Menu>
+    )
 
     return (
       <div>
-        <Row style={{ marginBottom: 20 }}>
-          <Col span={20}><h1>Boards</h1></Col>
+        <Row class='item'>
+          <Col span={20}>
+            <h1 class='header-line'><Icon type={constants.ICONS.boardIndex} /> BOARD INDEX</h1>
+          </Col>
           <Col span={4} style={{ textAlign: 'right' }}>
-            <Button onClick={this._handleCreateBoard} type='primary'>create board</Button>
-            <Button onClick={() => this.props.dispatch(notify({
-              type: constants.MESSAGE.info,
-              title: 'Test successful'
-            }))}>Test</Button>
+            <Dropdown overlay={menu}>
+              <Button style={{ marginLeft: 8 }}>
+                <Icon size='large' type={constants.ICONS.menu} /> <Icon type='down' />
+              </Button>
+            </Dropdown>
           </Col>
         </Row>
         <Row gutter={16}>
           {_.map(boards, board => {
             return (
               <Col class='gutter-row' span='8' key={board._id}>
-                <Link to={'/board/' + board._id}><Card title={board.title} bordered={true}>{board.descr}</Card></Link>
+                <Card style={{ cursor: 'pointer' }} title={board.title} onClick={() => {
+                  this.props.dispatch(boardSelect(currentUser, board._id))
+                  this.props.history.push('/board')
+                }}>{board.descr}</Card>
               </Col>
             )
           })}
@@ -42,7 +54,7 @@ export class Boards extends React.Component {
     )
   }
 
-  _handleCreateBoard = () => {
-    this.props.history.push('/create/board')
+  _handleMenuClick = e => {
+    if (e.key === '1') return this.props.history.push('/create/board')
   }
 }

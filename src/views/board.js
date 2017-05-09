@@ -8,7 +8,7 @@ import { SprintStart } from '../components'
 
 @connect((store, props) => {
   const { boards, currentUser, selectedBoard, sprints } = store.root
-  const board = _.find(boards, { _id: props.match.params.id })
+  const board = _.find(boards, { _id: selectedBoard })
 
   return {
     sprint: _.find(sprints, { board: selectedBoard, status: constants.SPRINT.status.active }),
@@ -29,11 +29,13 @@ export class Board extends React.Component {
   render () {
     const { board, sprint } = this.props
 
+    if (!board) return null
+
     const menu = (
       <Menu onClick={this._handleMenuClick}>
-        <Menu.Item key="1">1st menu item</Menu.Item>
-        <Menu.Item key="2">2nd menu item</Menu.Item>
-        <Menu.Item key="3">3d menu item</Menu.Item>
+        <Menu.Item key='1'>edit board</Menu.Item>
+        <Menu.Item key='2'>delete board</Menu.Item>
+        <Menu.Item key='3'>3d menu item</Menu.Item>
       </Menu>
     )
 
@@ -45,12 +47,12 @@ export class Board extends React.Component {
         }} />
         <Row class='item'>
           <Col span={20}>
-            <h1>Board {board.title}</h1>
+            <h1 class='header-line'><Icon type={constants.ICONS.board} /> BOARD - {board.title}</h1>
           </Col>
           <Col span={4} style={{ textAlign: 'right' }}>
             <Dropdown overlay={menu}>
               <Button style={{ marginLeft: 8 }}>
-                <Icon size='large' type='appstore' /> <Icon type='down' />
+                <Icon size='large' type={constants.ICONS.menu} /> <Icon type='down' />
               </Button>
             </Dropdown>
           </Col>
@@ -66,7 +68,7 @@ export class Board extends React.Component {
   }
 
   _handleMenuClick = e => {
-    debugger
+    if (e.key === '1') return this.props.history.push('/update/board/')
   }
 }
 

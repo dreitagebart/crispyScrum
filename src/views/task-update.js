@@ -48,20 +48,20 @@ class WrappedTask extends React.Component {
   }
 
   componentWillMount () {
-    this.props.form.setFields({
-      title: {
-        value: this.props.task.title
-      },
-      descr: {
-        value: this.props.task.descr
-      },
-      contact: {
-        value: this.props.task.contact
-      },
-      sprint: {
-        value: this.props.task.sprint
-      }
-    })
+    // this.props.form.setFields({
+    //   title: {
+    //     value: this.props.task.title
+    //   },
+    //   descr: {
+    //     value: this.props.task.descr
+    //   },
+    //   contact: {
+    //     value: this.props.task.contact
+    //   },
+    //   sprint: {
+    //     value: this.props.task.sprint
+    //   }
+    // })
   }
 
   render () {
@@ -71,8 +71,13 @@ class WrappedTask extends React.Component {
     return (
       <div>
         <Row class='item'>
+          <Col span={20}>
+            <h1 class='header-line'><Icon type={constants.ICONS.task} /> TASK</h1>
+          </Col>
+        </Row>
+        <Row class='item'>
           <Col>
-            <Button type='primary' onClick={() => this.props.history.goBack()}>back</Button>
+            <Button type='primary' icon='left' onClick={() => this.props.history.goBack()}>go back</Button>
           </Col>
         </Row>
         <Form onSubmit={this._handleSubmit}>
@@ -161,10 +166,12 @@ class WrappedTask extends React.Component {
             <h3>Title</h3>
           </Col>
           <Col span={1}>
-            <Icon onClick={() => this._handleSaveField('title')} style={{ fontSize: 16, cursor: 'pointer', marginRight: 10 }} type='save' />
+            <Icon onClick={() => this._handleSaveField('title')} style={{ fontSize: 16, cursor: 'pointer', marginRight: 10 }} type={constants.ICONS.save} />
           </Col>
           <Col span={this.state.valSpan}>
-            {fieldDecorator('title')(<Input size='large' />)}
+            {fieldDecorator('title', {
+              initialValue: this.props.task.title
+            })(<Input size='large' />)}
           </Col>
         </Row>
       </FormItem>
@@ -190,10 +197,12 @@ class WrappedTask extends React.Component {
             <h3>Description</h3>
           </Col>
           <Col span={1}>
-            <Icon onClick={() => this._handleSaveField('descr')} style={{ fontSize: 16, cursor: 'pointer', marginRight: 10 }} type='save' />
+            <Icon onClick={() => this._handleSaveField('descr')} style={{ fontSize: 16, cursor: 'pointer', marginRight: 10 }} type={constants.ICONS.save} />
           </Col>
           <Col span={this.state.valSpan}>
-            {fieldDecorator('descr')(<Input type='textarea' />)}
+            {fieldDecorator('descr', {
+              initialValue: this.props.task.descr
+            })(<Input type='textarea' />)}
           </Col>
         </Row>
       </FormItem>
@@ -251,7 +260,7 @@ class WrappedTask extends React.Component {
           <h3>Assignee</h3>
         </Col>
         <Col span={this.state.valSpan}>
-          <div style={{ cursor: 'pointer' }} onClick={() => this.setState({ assignee: true })}>{assignee ? <Tag>{displayName}</Tag> : <Tag>No assignee...</Tag> }</div>
+          {assignee ? <Tag onClick={() => this.setState({ assignee: true })} color='#108ee9'>{displayName}</Tag> : <Tag onClick={() => this.setState({ assignee: true })} color='#108ee9'>No assignee...</Tag>}
         </Col>
       </Row>
     )
@@ -265,9 +274,9 @@ class WrappedTask extends React.Component {
 
     const _renderContacts = () => {
       let contacts = []
-      if (this.props.task.contact.length === 0) return 'no contact persons defined'
+      if (this.props.task.contact.length === 0) return <Tag color='#108ee9' onClick={() => this.setState({ contact: true })}>no contact persons defined</Tag>
       _.map(this.props.task.contact, contact => {
-        contacts.push(<Tag onClick={() => this.setState({ contact: true })} key={contact.key}>{contact.text}</Tag>)
+        contacts.push(<Tag color='#108ee9' onClick={() => this.setState({ contact: true })} key={contact.key}>{contact.text}</Tag>)
       })
 
       return contacts
@@ -304,7 +313,7 @@ class WrappedTask extends React.Component {
           <h3>Contact</h3>
         </Col>
         <Col span={this.state.valSpan}>
-          <div style={{ cursor: 'pointer' }} onClick={() => this.setState({ contact: true })}>{_renderContacts()}</div>
+          {_renderContacts()}
         </Col>
       </Row>
     )
@@ -350,7 +359,7 @@ class WrappedTask extends React.Component {
           <h3>Sprint</h3>
         </Col>
         <Col span={this.state.valSpan}>
-          <div style={{ cursor: 'pointer' }} onClick={() => this.setState({ sprint: true })}>{sprint.name ? <Tag>{sprint.name}</Tag> : <Tag>No sprint assigned...</Tag> }</div>
+          {sprint.name ? <Tag color='#108ee9' onClick={() => this.setState({ sprint: true })}>{sprint.name}</Tag> : <Tag color='#108ee9' onClick={() => this.setState({ sprint: true })}>No sprint assigned...</Tag>}
         </Col>
       </Row>
     )

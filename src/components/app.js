@@ -4,7 +4,7 @@ import styles from '../styles'
 import moment from 'moment'
 import createHistory from 'history/createBrowserHistory'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import { TaskUpdate, User, Task, Board, BoardCreate, Backlog, Start, Boards, About, Teams, Users, UserCreate, Sprint, SprintCreate, Admin } from '../views'
+import { BoardUpdate, TaskUpdate, User, Task, Board, BoardCreate, Backlog, Start, Boards, About, Teams, Users, UserCreate, Sprint, Admin } from '../views'
 import { ConnectedRouter } from 'react-router-redux'
 import { sprintFetch, taskFetch, boardFetch, boardSelect, userFetch, dismiss } from '../actions'
 import { TaskModal, BreadCrumbs, HeaderMenu, SideMenu } from './'
@@ -62,9 +62,9 @@ export class App extends React.Component {
                 <Route path='/' component={BreadCrumbs} />
                 <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
                   <Route exact path='/' component={Boards} />
-                  <Route exact path='/create/sprint' component={SprintCreate} />
                   <Route exact path='/create/user' component={UserCreate} />
                   <Route exact path='/create/board' component={BoardCreate} />
+                  <Route exact path='/update/board' component={BoardUpdate} />
                   <Route exact path='/update/task/:id' component={TaskUpdate} />
                   <Route path='/sprint' component={Sprint} />
                   <Route path='/about' component={About} />
@@ -73,7 +73,7 @@ export class App extends React.Component {
                   <Route path='/users' component={Users} />
                   <Route path='/teams' component={Teams} />
                   <Route path='/user/:id' component={User} />
-                  <Route path='/board/:id' component={Board} />
+                  <Route path='/board' component={Board} />
                   <Route path='/task/:id' component={Task} />
                   <Route path='/admin' component={Admin} />
                 </div>

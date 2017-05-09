@@ -45,7 +45,7 @@ class WrappedSprint extends React.Component {
         ]}
       >
         <Form hideRequiredMark>
-          <FormItem {...formItemLayout} label="Name" hasFeedback colon={false}>
+          <FormItem {...formItemLayout} label='Name' hasFeedback colon={false}>
             <Row>
               <Col>
                 {getFieldDecorator('name', {
@@ -54,20 +54,20 @@ class WrappedSprint extends React.Component {
               </Col>
             </Row>
           </FormItem>
-          <FormItem {...formItemLayout} label="Begin date" colon={false}>
+          <FormItem {...formItemLayout} label='Begin date' colon={false}>
             <Row>
               <Col>
                 <b>Today</b>
               </Col>
             </Row>
           </FormItem>
-          <FormItem {...formItemLayout} label="End date" colon={false}>
+          <FormItem {...formItemLayout} label='End date' colon={false}>
             <Row>
               <Col>
                 {getFieldDecorator('end', {
                   initialValue: this.state.future,
                   rules: [{ type: 'object', required: true, message: 'Please select your end date!' }],
-                })(<DatePicker allowClear={false} disabledDate={this.disabledEndDate} placeholder='pick your end date' format="YYYY-MM-DD" />)}
+                })(<DatePicker allowClear={false} disabledDate={this.disabledEndDate} placeholder='pick your end date' format='YYYY-MM-DD' />)}
               </Col>
             </Row>
           </FormItem>

@@ -58,6 +58,11 @@ class WrappedUser extends React.Component {
 
     return (
       <div>
+        <Row class='item'>
+          <Col span={20}>
+            <h1 class='header-line'><Icon type={constants.ICONS.user} /> CREATE NEW USER</h1>
+          </Col>
+        </Row>
         <Row>
           <Col span={12}>
             <Form onSubmit={this._handleSubmit}>

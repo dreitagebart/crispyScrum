@@ -78,6 +78,16 @@ export const root = (store = {
     case constants.ACTIONS.sprintFilterShowAll: {
       return {...store, sprintFilter: []}
     }
+    case constants.ACTIONS.boardUpdated: {
+      let oldBoard = _.find(store.boards, action.payload.query)
+      const rejected = _.reject(store.boards, action.payload.query)
+      let newBoard = {...oldBoard}
+      _.forOwn(action.payload.update, (values, key) => {
+        newBoard[key] = values
+      })
+
+      return {...store, boards: [...rejected, newBoard]}
+    }
   }
   return store
 }

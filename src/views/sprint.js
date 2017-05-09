@@ -4,31 +4,38 @@ import React from 'react'
 import update from 'react/lib/update'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { connect } from 'react-redux'
-import { Dropdown, Menu, Steps, Button, Icon, Card, Row, Col } from 'antd'
+import { Anchor, Collapse, Dropdown, Menu, Steps, Button, Icon, Card, Row, Col } from 'antd'
 import { DragDropContext } from 'react-dnd'
-import { Swimlane, TaskDrag } from '../components'
-import { taskUpdate, sprintFilter, sprintFilterShowAll } from '../actions'
+import { TaskModal, SprintStart, Swimlane, TaskDrag } from '../components'
+import { taskUpdate, sprintFilter, sprintFilterShowAll, sprintStart } from '../actions'
 import * as constants from '../constants'
 
+moment.locale('en')
+
+const Link = Anchor.Link
+const Panel = Collapse.Panel
 const Step = Steps.Step
 const ButtonGroup = Button.Group
 
 @connect((store, props) => {
   const { sprints, tasks, selectedBoard, users, sprintFilter, currentUser } = store.root
 
-  let workload = _.filter(tasks, task => {
+  let backlog = _.filter(tasks, task => {
     const { board, sprint, lane } = task
     if (board !== selectedBoard) return false
-    if (!sprint && !lane) return true
+    if (!sprint || !lane) return true
     return false
   })
 
+  const withoutEpics = _.reject(tasks, { type: constants.TASK.types.epic })
+
   return {
+    selectedBoard,
     filter: sprintFilter,
     users,
-    tasks,
+    tasks: withoutEpics,
     sprint: _.find(sprints, { board: selectedBoard, status: constants.SPRINT.status.active }),
-    workload
+    backlog
   }
 })
 
@@ -39,7 +46,12 @@ export class Sprint extends React.Component {
     super(props)
 
     this.state = {
+      toDoPanel: '1',
+      taskType: constants.TASK.types.incident,
+      sprintStart: false,
+      taskModal: false,
       swimlanes: [
+        { type: constants.SWIMLANES.toDo, accepts: [constants.TASK.types.meeting, constants.TASK.types.incident], lastDroppedItem: null },
         { type: constants.SWIMLANES.inProgress, accepts: [constants.TASK.types.meeting, constants.TASK.types.incident], lastDroppedItem: null },
         { type: constants.SWIMLANES.onHold, accepts: [constants.TASK.types.meeting, constants.TASK.types.incident], lastDroppedItem: null },
         { type: constants.SWIMLANES.resolved, accepts: [constants.TASK.types.meeting, constants.TASK.types.incident], lastDroppedItem: null },
@@ -55,7 +67,7 @@ export class Sprint extends React.Component {
 
   render () {
     const { swimlanes } = this.state
-    const { sprint, tasks, workload, users, filter } = this.props
+    const { sprint, tasks, backlog, users, filter, selectedBoard } = this.props
     let filteredTasks = []
 
     if (filter.length) filteredTasks = _.filter(tasks, task => {
@@ -63,31 +75,102 @@ export class Sprint extends React.Component {
     })
     else filteredTasks = tasks
 
-    if (!sprint) return <div>There is no active Sprint running :-/</div>
+    if (!sprint) return (
+      <div>
+        <SprintStart visible={this.state.sprintStart} onClose={() => this.setState({ sprintStart: false })} onConfirm={data => {
+          let sprint = {...data, board: selectedBoard, end: data.end.format()}
+          this.props.dispatch(sprintStart(sprint))
+        }} />
+        <Row class='item'>
+          <Col span={20}>
+            <h1 class='header-line'><Icon type={constants.ICONS.sprint} /> SPRINT - no active sprint</h1>
+          </Col>
+        </Row>
+        <Row class='item' type='flex' align='center'>
+          <Col>
+            <div style={{ textAlign: 'center', borderRadius: 6, border: '1px solid #cfcfcf', backgroundColor: '#efefef', padding: 20 }}>
+              <div class='item'>
+                <h2>There is currently no active sprint running.</h2>
+                <h2>Do you want to start a sprint now?</h2>
+              </div>
+              <Button size='large' style={{ marginRight: 20 }} icon={constants.ICONS.sprint} type='primary' onClick={() => this.setState({ sprintStart: true })}>Yes</Button>
+              <Button size='large' icon={constants.ICONS.board}>Bring me back to the board overview</Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    )
+
+    const toDos = _.filter(filteredTasks, { lane: constants.SWIMLANES.toDo })
+    const toDoComponents = []
+
+    _.map(toDos, toDo => {
+      let result = _.find(users, { _id: toDo.assignee })
+      let assignee = `${result.first} ${result.last}`
+      toDoComponents.push(
+        <TaskDrag
+          assignee={assignee}
+          onClick={() => this.props.history.push('/update/task/' + toDo._id)}
+          key={toDo._id}
+          descr={toDo.descr}
+          id={toDo._id}
+          title={toDo.title}
+          type={toDo.type}
+          isDropped={this.isDropped(toDo._id)}
+        />
+      )
+    })
+
+    const toDoLane = _.find(swimlanes, { type: constants.SWIMLANES.toDo })
 
     const parsedEnd = moment(sprint.end).fromNow()
 
     const menu = (
       <Menu onClick={this._handleMenuClick}>
-        <Menu.Item key="1">1st menu item</Menu.Item>
-        <Menu.Item key="2">2nd menu item</Menu.Item>
-        <Menu.Item key="3">3d menu item</Menu.Item>
+        <Menu.Item key='1'>close sprint</Menu.Item>
+        <Menu.Item key='2'>edit sprint</Menu.Item>
       </Menu>
     )
 
+    const customPanelStyle = {
+      marginBottom: 24,
+      border: 0
+    }
+
     return (
       <div>
-        <Row class='item' align='middle'>
+        <TaskModal initialSprint={sprint._id} onClose={() => this.setState({ taskModal: false })} type={this.state.taskType} onTypeSwitch={type => this.setState({ taskType: type })} visible={this.state.taskModal} />
+        <Row class='item'>
           <Col span={20}>
-            <h1>Sprint {sprint.name}</h1>
-            <span style={{ fontSize: 16 }}><Icon type='calendar' /> ends {parsedEnd}</span>
+            <h1 class='header-line'><Icon type={constants.ICONS.sprint} /> ACTIVE SPRINT - {sprint.name}</h1>
+            <div style={{ fontSize: 16 }}><Icon type={constants.ICONS.calendar} /> ends {parsedEnd}</div>
           </Col>
           <Col span={4} style={{ textAlign: 'right' }}>
             <Dropdown overlay={menu}>
               <Button style={{ marginLeft: 8 }}>
-                <Icon size='large' type='appstore' /> <Icon type='down' />
+                <Icon size='large' type={constants.ICONS.menu} /> <Icon type='down' />
               </Button>
             </Dropdown>
+          </Col>
+        </Row>
+        <Row class='item'>
+          <Col span={20}>
+            <div style={{ padding: 14, borderColor: '#efefef', borderWidth: 2, borderStyle: 'solid', borderRadius: 8 }}>
+              <Steps current={5}>
+                <Step icon={constants.ICONS.toDo} title='to do' description='task is not processed yet' />
+                <Step icon={constants.ICONS.inProgress} title='in progress' description='you are currently working on' />
+                <Step icon={constants.ICONS.onHold} title='on hold' description='this work is waiting for feedback' />
+                <Step icon={constants.ICONS.resolved} title='resolved' description='this work is finished, but could be reopened again' />
+                <Step icon={constants.ICONS.done} title='done' description='this work is finished' />
+              </Steps>
+            </div>
+          </Col>
+          <Col span={2} offset={2}>
+            <Anchor style={{ background: 'none' }} showInkInFixed>
+              <Link href='#toDo' title={<Button shape='circle' size='large' type='primary' icon={constants.ICONS.toDo} />} />
+              <Link href='#inProgress' title={<Button shape='circle' size='large' type='primary' icon={constants.ICONS.inProgress} />} />
+              <Link href='#backlog' title={<Button shape='circle' size='large' type='primary' icon={constants.ICONS.backlog} />} />
+            </Anchor>
           </Col>
         </Row>
         <Row class='item'>
@@ -104,32 +187,48 @@ export class Sprint extends React.Component {
             </ButtonGroup>
           </Col>
         </Row>
-        <Row class='item'>
-          <Col>
-            <Steps current={4}>
-              <Step icon='right-square-o' title='in progress' description='you are currently working on' />
-              <Step icon='down-square-o' title='on hold' description='this work is waiting for feedback' />
-              <Step icon='minus-square-o' title='resolved' description='this work is finished, but could be reopened again' />
-              <Step icon='check-square-o' title='done' description='this work is finished' />
-            </Steps>
+        <Row class='item' id='toDo'>
+          <Col span={18}>
+            <Collapse bordered={false} defaultActiveKey={[this.state.toDoPanel]}>
+              <Panel style={customPanelStyle} header={
+                <Row>
+                  <Col>
+                    <h2 style={{ marginLeft: 14 }}><Icon type={constants.ICONS.toDo} /> to do</h2>
+                  </Col>
+                </Row>
+              } key='1'>
+                <Row class='item'>
+                  <Col>
+                    <Swimlane
+                      type={toDoLane.type}
+                      tasks={toDoComponents}
+                      accepts={toDoLane.accepts}
+                      lastDroppedItem={toDoLane.lastDroppedItem}
+                      onDrop={item => this.handleDrop(item, toDoLane.type)}
+                    />
+                  </Col>
+                </Row>
+              </Panel>
+            </Collapse>
           </Col>
         </Row>
         <Row class='item' gutter={24}>
           <Col span={6}>
-            <h2 class='swimlaneHeader'>in progress</h2>
+            <h2 id='inProgress' class='swimlaneHeader'><Icon type={constants.ICONS.inProgress} /> in progress</h2>
           </Col>
           <Col span={6}>
-            <h2 class='swimlaneHeader'>on hold</h2>
+            <h2 id='onHold' class='swimlaneHeader'><Icon type={constants.ICONS.onHold} /> on hold</h2>
           </Col>
           <Col span={6}>
-            <h2 class='swimlaneHeader'>resolved</h2>
+            <h2 id='resolved' class='swimlaneHeader'><Icon type={constants.ICONS.resolved} /> resolved</h2>
           </Col>
           <Col span={6}>
-            <h2 class='swimlaneHeader'>done</h2>
+            <h2 id='done' class='swimlaneHeader'><Icon type={constants.ICONS.done} /> done</h2>
           </Col>
         </Row>
         <Row class='item' gutter={24}>
           {_.map(swimlanes, swimlane => {
+            if (swimlane.type === constants.SWIMLANES.toDo) return
             let relTasks = []
             const filtered = _.filter(filteredTasks, { lane: swimlane.type, sprint: sprint._id })
             _.map(filtered, task => {
@@ -165,49 +264,55 @@ export class Sprint extends React.Component {
           })}
         </Row>
         <Row class='item'>
-          <Col><h1>Workload</h1></Col>
+          <Col span={20}>
+            <h1 id='backlog' class='header-line'><Icon type={constants.ICONS.backlog} /> BACKLOG</h1>
+          </Col>
         </Row>
-        <Row gutter={24}>
-          {_.map(workload, task => {
-            let result = _.find(users, { _id: task.assignee })
-            let assignee = `${result.first} ${result.last}`
-            return (
-              <Col span={6} key={task._id}>
-                <TaskDrag
-                  assignee={assignee}
-                  onClick={() => this.props.history.push('/update/task/' + task._id)}
-                  key={task._id}
-                  descr={task.descr}
-                  id={task._id}
-                  title={task.title}
-                  type={task.type}
-                  isDropped={this.isDropped(task._id)}
-                />
-              </Col>
-            )
-          })}
-        </Row>
+        {!backlog.length ? (
+          <Row class='item' type='flex' align='center'>
+            <Col>
+              <div style={{ textAlign: 'center', borderRadius: 6, border: '1px solid #cfcfcf', backgroundColor: '#efefef', padding: 20 }}>
+                <div class='item'>
+                  <h2>There are currently no tasks in your backlog.</h2>
+                  <h2>Do you want to create a task now?</h2>
+                </div>
+                <Button size='large' style={{ marginRight: 20 }} icon={constants.ICONS.task} type='primary' onClick={() => this.setState({ taskModal: true })}>Yes</Button>
+              </div>
+            </Col>
+          </Row>
+        ) : (
+          <Row gutter={24}>
+            {_.map(backlog, task => {
+              let result = _.find(users, { _id: task.assignee })
+              let assignee = `${result.first} ${result.last}`
+              return (
+                <Col span={6} key={task._id}>
+                  <TaskDrag
+                    assignee={assignee}
+                    onClick={() => this.props.history.push('/update/task/' + task._id)}
+                    key={task._id}
+                    descr={task.descr}
+                    id={task._id}
+                    title={task.title}
+                    type={task.type}
+                    isDropped={this.isDropped(task._id)}
+                  />
+                </Col>
+              )
+            })}
+          </Row>
+        )}
       </div>
     )
+  }
+
+  _handleMenuClick = e => {
+    if (e.key === '1') return true //close sprint
+    if (e.key === '2') return true //edit sprint
   }
 
   handleDrop = (item, lane) => {
     const { id } = item
     this.props.dispatch(taskUpdate({ _id: id }, { lane, sprint: this.props.sprint._id }))
-  }
-
-
-  _renderTasksInLane = lane => {
-    let tasks = []
-    const result = _.filter(this.props.tasks, { lane, sprint: this.props.sprint._id })
-    if (result.length) {
-      _.map(result, task => {
-        tasks.push(
-          <Card key={task._id} title={task.title}>{task.descr}</Card>
-        )
-      })
-
-      return tasks
-    } else return null
   }
 }
