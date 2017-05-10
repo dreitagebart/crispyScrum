@@ -18,7 +18,8 @@ const taskSource = {
   beginDrag(props) {
     return {
       id: props.id,
-      title: props.title
+      title: props.title,
+      lane: props.lane
     }
   }
 }
@@ -37,6 +38,7 @@ export class TaskDrag extends React.Component {
     title: PropTypes.string.isRequired,
     descr: PropTypes.string,
     type: PropTypes.string.isRequired,
+    lane: PropTypes.number,
     assignee: PropTypes.string,
     isDropped: PropTypes.bool.isRequired
   }

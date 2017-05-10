@@ -61,7 +61,7 @@ export class Users extends React.Component {
 
     const menu = (
       <Menu onClick={this._handleMenuClick}>
-        <Menu.Item key='1'>create new user</Menu.Item>
+        <Menu.Item key='1' class='menu-item'><Icon type={constants.ICONS.create} /> create new user</Menu.Item>
       </Menu>
     )
 

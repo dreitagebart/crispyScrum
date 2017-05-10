@@ -1,4 +1,7 @@
 export const ICONS = {
+  edit: 'edit',
+  closeSprint: 'safety',
+  create: 'file-add',
   toDo: 'up-square-o',
   inProgress: 'right-square-o',
   onHold: 'down-square-o',
@@ -16,7 +19,10 @@ export const ICONS = {
   incident: 'exception',
   epic: 'trophy',
   meeting: 'flag',
-  menu: 'appstore',
+  menu: 'ellipsis',
   logo: 'swap',
-  calendar: 'calendar'
+  calendar: 'calendar',
+  top: 'up',
+  delete: 'delete',
+  detach: 'select'
 }

@@ -33,9 +33,8 @@ export class Board extends React.Component {
 
     const menu = (
       <Menu onClick={this._handleMenuClick}>
-        <Menu.Item key='1'>edit board</Menu.Item>
-        <Menu.Item key='2'>delete board</Menu.Item>
-        <Menu.Item key='3'>3d menu item</Menu.Item>
+        <Menu.Item key='1' class='menu-item'><Icon type={constants.ICONS.edit} /> edit board</Menu.Item>
+        <Menu.Item key='2' class='menu-item'><Icon type={constants.ICONS.delete} /> delete board</Menu.Item>
       </Menu>
     )
 

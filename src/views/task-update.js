@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import { boardCreate, notify, taskUpdate } from '../actions'
-import { Tag, Select, Button, Col, Row, Form, Input, Icon } from 'antd'
+import { Menu, Dropdown, Tag, Select, Button, Col, Row, Form, Input, Icon } from 'antd'
 import * as constants from '../constants'
 
 const FormItem = Form.Item
@@ -68,11 +68,25 @@ class WrappedTask extends React.Component {
     const { task } = this.props
     const { getFieldDecorator } = this.props.form
 
+    const menu = (
+      <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key='1' class='menu-item'><Icon type={constants.ICONS.detach} /> detach task</Menu.Item>
+        <Menu.Item key='2' class='menu-item'><Icon type={constants.ICONS.delete} /> delete delete</Menu.Item>
+      </Menu>
+    )
+
     return (
       <div>
         <Row class='item'>
           <Col span={20}>
             <h1 class='header-line'><Icon type={constants.ICONS.task} /> TASK</h1>
+          </Col>
+          <Col span={4} style={{ textAlign: 'right' }}>
+            <Dropdown overlay={menu}>
+              <Button style={{ marginLeft: 8 }}>
+                <Icon size='large' type={constants.ICONS.menu} /> <Icon type='down' />
+              </Button>
+            </Dropdown>
           </Col>
         </Row>
         <Row class='item'>

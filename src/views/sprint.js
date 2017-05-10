@@ -47,6 +47,7 @@ export class Sprint extends React.Component {
 
     this.state = {
       toDoPanel: '1',
+      inProgressPanel: '1',
       taskType: constants.TASK.types.incident,
       sprintStart: false,
       taskModal: false,
@@ -111,6 +112,7 @@ export class Sprint extends React.Component {
         <TaskDrag
           assignee={assignee}
           onClick={() => this.props.history.push('/update/task/' + toDo._id)}
+          lane={toDo.lane}
           key={toDo._id}
           descr={toDo.descr}
           id={toDo._id}
@@ -123,18 +125,20 @@ export class Sprint extends React.Component {
 
     const toDoLane = _.find(swimlanes, { type: constants.SWIMLANES.toDo })
 
+    const currentDay = moment()
+    const onDayLeft = moment(sprint.end).diff(currentDay, 'days') === 1
     const parsedEnd = moment(sprint.end).fromNow()
 
     const menu = (
       <Menu onClick={this._handleMenuClick}>
-        <Menu.Item key='1'>close sprint</Menu.Item>
-        <Menu.Item key='2'>edit sprint</Menu.Item>
+        <Menu.Item key='1' class='menu-item'><Icon type={constants.ICONS.closeSprint} /> close sprint</Menu.Item>
+        <Menu.Item key='2' class='menu-item'><Icon type={constants.ICONS.edit} /> edit sprint</Menu.Item>
       </Menu>
     )
 
     const customPanelStyle = {
-      marginBottom: 24,
-      border: 0
+      marginBottom: 10,
+      // border: 0
     }
 
     return (
@@ -143,7 +147,7 @@ export class Sprint extends React.Component {
         <Row class='item'>
           <Col span={20}>
             <h1 class='header-line'><Icon type={constants.ICONS.sprint} /> ACTIVE SPRINT - {sprint.name}</h1>
-            <div style={{ fontSize: 16 }}><Icon type={constants.ICONS.calendar} /> ends {parsedEnd}</div>
+            <div style={{ fontSize: 18, fontWeight: 'bold', color: onDayLeft ? '#108ee9' : '' }}><Icon type={constants.ICONS.calendar} /> ends {parsedEnd}</div>
           </Col>
           <Col span={4} style={{ textAlign: 'right' }}>
             <Dropdown overlay={menu}>
@@ -167,6 +171,7 @@ export class Sprint extends React.Component {
           </Col>
           <Col span={2} offset={2}>
             <Anchor style={{ background: 'none' }} showInkInFixed>
+              <Link href='#top' title={<Button size='large' type='ghost' icon={constants.ICONS.top} />} />
               <Link href='#toDo' title={<Button shape='circle' size='large' type='primary' icon={constants.ICONS.toDo} />} />
               <Link href='#inProgress' title={<Button shape='circle' size='large' type='primary' icon={constants.ICONS.inProgress} />} />
               <Link href='#backlog' title={<Button shape='circle' size='large' type='primary' icon={constants.ICONS.backlog} />} />
@@ -204,7 +209,7 @@ export class Sprint extends React.Component {
                       tasks={toDoComponents}
                       accepts={toDoLane.accepts}
                       lastDroppedItem={toDoLane.lastDroppedItem}
-                      onDrop={item => this.handleDrop(item, toDoLane.type)}
+                      onDrop={item => this._handleDrop(item, toDoLane.type)}
                     />
                   </Col>
                 </Row>
@@ -212,56 +217,66 @@ export class Sprint extends React.Component {
             </Collapse>
           </Col>
         </Row>
-        <Row class='item' gutter={24}>
-          <Col span={6}>
-            <h2 id='inProgress' class='swimlaneHeader'><Icon type={constants.ICONS.inProgress} /> in progress</h2>
-          </Col>
-          <Col span={6}>
-            <h2 id='onHold' class='swimlaneHeader'><Icon type={constants.ICONS.onHold} /> on hold</h2>
-          </Col>
-          <Col span={6}>
-            <h2 id='resolved' class='swimlaneHeader'><Icon type={constants.ICONS.resolved} /> resolved</h2>
-          </Col>
-          <Col span={6}>
-            <h2 id='done' class='swimlaneHeader'><Icon type={constants.ICONS.done} /> done</h2>
-          </Col>
-        </Row>
-        <Row class='item' gutter={24}>
-          {_.map(swimlanes, swimlane => {
-            if (swimlane.type === constants.SWIMLANES.toDo) return
-            let relTasks = []
-            const filtered = _.filter(filteredTasks, { lane: swimlane.type, sprint: sprint._id })
-            _.map(filtered, task => {
-              let result = _.find(users, { _id: task.assignee })
-              let assignee = `${result.first} ${result.last}`
-              relTasks.push(
-                <TaskDrag
-                  assignee={assignee}
-                  onClick={() => this.props.history.push('/update/task/' + task._id)}
-                  key={task._id}
-                  descr={task.descr}
-                  id={task._id}
-                  title={task.title}
-                  type={task.type}
-                  isDropped={this.isDropped(task._id)}
-                />
-              )
-            })
+        <Row class='item' id='inProgress'>
+          <Col span={24}>
+            <Collapse bordered={false} defaultActiveKey={[this.state.inProgressPanel]}>
+              <Panel style={customPanelStyle} header={
+                <Row class='item' gutter={24}>
+                  <Col span={6}>
+                    <h2 style={{ marginLeft: 14 }}><Icon type={constants.ICONS.inProgress} /> in progress</h2>
+                  </Col>
+                  <Col span={6}>
+                    <h2 style={{ marginLeft: 14 }}><Icon type={constants.ICONS.onHold} /> on hold</h2>
+                  </Col>
+                  <Col span={6}>
+                    <h2 style={{ marginLeft: 14 }}><Icon type={constants.ICONS.resolved} /> resolved</h2>
+                  </Col>
+                  <Col span={6}>
+                    <h2 style={{ marginLeft: 14 }}><Icon type={constants.ICONS.done} /> done</h2>
+                  </Col>
+                </Row>
+              } key='1'>
+                <Row class='item' gutter={24}>
+                  {_.map(swimlanes, swimlane => {
+                    if (swimlane.type === constants.SWIMLANES.toDo) return
+                    let relTasks = []
+                    const filtered = _.filter(filteredTasks, { lane: swimlane.type, sprint: sprint._id })
+                    _.map(filtered, task => {
+                      let result = _.find(users, { _id: task.assignee })
+                      let assignee = `${result.first} ${result.last}`
+                      relTasks.push(
+                        <TaskDrag
+                          lane={task.lane}
+                          assignee={assignee}
+                          onClick={() => this.props.history.push('/update/task/' + task._id)}
+                          key={task._id}
+                          descr={task.descr}
+                          id={task._id}
+                          title={task.title}
+                          type={task.type}
+                          isDropped={this.isDropped(task._id)}
+                        />
+                      )
+                    })
 
-            return (
-              <Col span={6} key={swimlane.type}>
-                <div>
-                  <Swimlane
-                    type={swimlane.type}
-                    tasks={relTasks}
-                    accepts={swimlane.accepts}
-                    lastDroppedItem={swimlane.lastDroppedItem}
-                    onDrop={item => this.handleDrop(item, swimlane.type)}
-                  />
-                </div>
-              </Col>
-            )
-          })}
+                    return (
+                      <Col span={6} key={swimlane.type}>
+                        <div>
+                          <Swimlane
+                            type={swimlane.type}
+                            tasks={relTasks}
+                            accepts={swimlane.accepts}
+                            lastDroppedItem={swimlane.lastDroppedItem}
+                            onDrop={item => this._handleDrop(item, swimlane.type)}
+                          />
+                        </div>
+                      </Col>
+                    )
+                  })}
+                </Row>
+              </Panel>
+            </Collapse>
+          </Col>
         </Row>
         <Row class='item'>
           <Col span={20}>
@@ -292,6 +307,7 @@ export class Sprint extends React.Component {
                     onClick={() => this.props.history.push('/update/task/' + task._id)}
                     key={task._id}
                     descr={task.descr}
+                    lane={task.lane}
                     id={task._id}
                     title={task.title}
                     type={task.type}
@@ -311,8 +327,9 @@ export class Sprint extends React.Component {
     if (e.key === '2') return true //edit sprint
   }
 
-  handleDrop = (item, lane) => {
-    const { id } = item
-    this.props.dispatch(taskUpdate({ _id: id }, { lane, sprint: this.props.sprint._id }))
+  _handleDrop = (item, isInLane) => {
+    const { id, lane } = item
+    if (lane === isInLane) return
+    this.props.dispatch(taskUpdate({ _id: id }, { lane: isInLane, sprint: this.props.sprint._id }))
   }
 }

@@ -51,7 +51,7 @@ export class App extends React.Component {
     
     return (
       <ConnectedRouter history={history}>
-        <div>
+        <div id='top'>
           <Layout>
             <Sider width={300}>
               <Route path='/' component={SideMenu} />
@@ -78,8 +78,8 @@ export class App extends React.Component {
                   <Route path='/admin' component={Admin} />
                 </div>
               </Content>
-              <Footer style={{ textAlign: 'center' }}>
-                created by dreitagebart
+              <Footer style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 14 }}><span style={{ color: '#0e77ca' }}><Icon type='code-o' /></span> with <span style={{ color: '#f04134' }}><Icon type='heart' /></span> by dreitagebart</div>
               </Footer>
             </Layout>
           </Layout>

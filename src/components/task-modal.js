@@ -169,7 +169,11 @@ class WrappedModal extends React.Component {
       let assigneeOptions = []
 
       _.map(this.props.sprints, sprint => {
-        sprintOptions.push(<Option key={sprint._id} value={sprint._id}>{sprint.name}</Option>)
+        let sprintName = sprint.name
+        if (sprint.status === constants.SPRINT.status.closed) return
+        if (sprint.status === constants.SPRINT.status.active) sprintName = <b>{sprint.name} (active sprint)`</b>
+
+        sprintOptions.push(<Option key={sprint._id} value={sprint._id}>{sprintName}</Option>)
       })
 
       fields.push(
