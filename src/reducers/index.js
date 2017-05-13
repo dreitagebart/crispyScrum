@@ -1,8 +1,8 @@
 import { root } from './root'
+import { controller } from './controller'
 import { combineReducers } from 'redux'
-import { routerReducer } from 'react-router-redux'
 
 export default combineReducers({
   root,
-  router: routerReducer
+  controller
 })

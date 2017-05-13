@@ -15,6 +15,8 @@ export const ACTIONS = {
   taskReceived: 'TASK_RECEIVED',
   taskCreated: 'TASK_CREATED',
   taskUpdated: 'TASK_UPDATED',
+  taskDetach: 'TASK_DETACH',
+  taskAttach: 'TASK_ATTACH',
   boardUpdated: 'BOARD_UPDATED',
   boardSelect: 'BOARD_SELECT'
 }

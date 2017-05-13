@@ -70,7 +70,6 @@ export class SideMenu extends React.Component {
     return (
       <div>
         <div class='Aligner logo' onClick={() => this.props.history.push('/')}>
-          <div style={{ fontWeight: 'bold', fontSize: 32, color: '#108ee9' }}>cS</div>
           <div style={{ fontSize: 48 }}><Icon type={constants.ICONS.logo} /></div>
         </div>
         <Menu style={{ fontSize: '1.1em' }} theme='dark' mode={this.state.mode} defaultOpenKeys={['sub1']}>

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
-import { boardCreate, notify, taskUpdate } from '../actions'
+import { taskDetach, boardCreate, notify, taskUpdate } from '../actions'
 import { Menu, Dropdown, Tag, Select, Button, Col, Row, Form, Input, Icon } from 'antd'
 import * as constants from '../constants'
 
@@ -10,6 +10,7 @@ const Option = Select.Option
 
 @connect((store, props) => {
   const { tasks, users, sprints } = store.root
+  const { detachedTasks } = store.controller
   let rawTask = _.find(tasks, { _id: props.match.params.id })
   let task = {...rawTask, contact: []}
   _.map(rawTask.contact, contact => {
@@ -22,6 +23,7 @@ const Option = Select.Option
   })
 
   return {
+    detachedTasks,
     sprints,
     task,
     users
@@ -65,12 +67,14 @@ class WrappedTask extends React.Component {
   }
 
   render () {
-    const { task } = this.props
+    const { task, detachedTasks } = this.props
     const { getFieldDecorator } = this.props.form
+    debugger
+    const disableDetach = _.indexOf(detachedTasks, task._id) >= 0
 
     const menu = (
       <Menu onClick={this._handleMenuClick}>
-        <Menu.Item key='1' class='menu-item'><Icon type={constants.ICONS.detach} /> detach task</Menu.Item>
+        <Menu.Item key='1' class='menu-item' disabled={disableDetach}><Icon type={constants.ICONS.detach} /> detach task</Menu.Item>
         <Menu.Item key='2' class='menu-item'><Icon type={constants.ICONS.delete} /> delete delete</Menu.Item>
       </Menu>
     )
@@ -103,6 +107,11 @@ class WrappedTask extends React.Component {
         </Form>
       </div>
     )
+  }
+
+  _handleMenuClick = e => {
+    debugger
+    if (e.key === '1') return this.props.dispatch(taskDetach(this.props.task._id))
   }
 
   _handleSubmit = e => {

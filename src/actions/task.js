@@ -2,6 +2,8 @@ import axios from 'axios'
 import * as constants from '../constants'
 import { appLoading, appLoaded, notify } from './'
 
+const ipc = window.require('electron').ipcRenderer
+
 export const taskFetch = () => {
   return dispatch => {
     dispatch(appLoading())
@@ -85,5 +87,22 @@ export const taskUpdate = (query, update, callback) => {
           title: error.message
         }))
       })
+  }
+}
+
+export const taskDetach = id => {
+  return dispatch => {
+    ipc.send('task-detach', id)
+    dispatch({
+      type: constants.ACTIONS.taskDetach,
+      payload: id
+    })
+  }
+}
+
+export const taskAttach = id => {
+  return {
+    type: constants.ACTIONS.taskAttach,
+    payload: id
   }
 }

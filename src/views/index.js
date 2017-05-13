@@ -1,5 +1,4 @@
 export * from './start'
-export * from './about'
 export * from './teams'
 export * from './task'
 export * from './task-update'

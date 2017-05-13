@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { store, App } from '../components'
+import { App } from '../components'
+import store from '../components/store'
 
 class Root extends React.Component {
   render () {

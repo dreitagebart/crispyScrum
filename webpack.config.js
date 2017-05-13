@@ -1,13 +1,17 @@
 var path = require('path')
-var webpack = require('webpack')
 
 module.exports = {
+  target: 'electron-renderer',
   devtool: 'source-map',
   watch: true,
-  entry: './src/components/root',
+  entry: {
+    app: './src/components/root',
+    task: './src/components/task-detached',
+    about: './src/components/about'
+  },
   output: {
     path: path.resolve(__dirname, 'src', 'public', 'js'),
-    filename: 'app.js'
+    filename: '[name].js'
   },
   module: {
     rules: [

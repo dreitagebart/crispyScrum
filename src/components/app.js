@@ -4,7 +4,7 @@ import styles from '../styles'
 import moment from 'moment'
 import createHistory from 'history/createBrowserHistory'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import { BoardUpdate, TaskUpdate, User, Task, Board, BoardCreate, Backlog, Start, Boards, About, Teams, Users, UserCreate, Sprint, Admin } from '../views'
+import { TaskDetached, BoardUpdate, TaskUpdate, User, Task, Board, BoardCreate, Backlog, Start, Boards, About, Teams, Users, UserCreate, Sprint, Admin } from '../views'
 import { ConnectedRouter } from 'react-router-redux'
 import { sprintFetch, taskFetch, boardFetch, boardSelect, userFetch, dismiss } from '../actions'
 import { TaskModal, BreadCrumbs, HeaderMenu, SideMenu } from './'
@@ -48,7 +48,7 @@ export class App extends React.Component {
         <Spin size='large' />
       </div>
     )
-    
+
     return (
       <ConnectedRouter history={history}>
         <div id='top'>

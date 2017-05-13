@@ -26,6 +26,7 @@
     "axios": "^0.16.1",
     "body-parser": "^1.17.1",
     "electron": "^1.6.6",
+    "electron-redux": "^1.2.5",
     "express": "^4.15.2",
     "express-oauth-server": "^2.0.0-b1",
     "faker": "^4.1.0",
