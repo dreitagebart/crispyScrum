@@ -40,24 +40,28 @@ npm start
 
 This app is using such awesome tools like:
 
-- [React](https://facebook.github.io/react)
-- [React-DND](http://react-dnd.github.io/react-dnd)
+- [Ant Design](https://ant.design)
+- [Babel](babeljs.io)
 - [Electron](https://electron.atom.io)
 - [Express](http://expressjs.com)
-- [Ant Design](https://ant.design)
-- [Redux](http://redux.js.org)
-- [Webpack](https://webpack.js.org)
-- [Babel](babeljs.io)
+- [React](https://facebook.github.io/react)
+- [React-DND](http://react-dnd.github.io/react-dnd)
 - [React-Router](https://github.com/ReactTraining/react-router)
+- [Redux](http://redux.js.org)
+- [moment-js](http://momentjs.com)
 - [Mongo DB](https://www.mongodb.com)
 - [mongoose](http://mongoosejs.com)
-- [moment-js](http://momentjs.com)
 - [Robomongo](https://robomongo.org)
+- [Visual Studio Code](https://code.visualstudio.com)
+- [Webpack](https://webpack.js.org)
 
 ## To dos
 
  - Authentication system
  - i18n 
+ - bugfixing
+ - bugfixing
+ - testing
  - ...
 
  ## License
