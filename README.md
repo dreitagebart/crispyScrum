@@ -11,7 +11,7 @@ my crispy unopinionated scrum app
 
 ## Installation
 
-[download](https://github.com/dreitagebart/crispyScrum/archive/master.zip) this repository or install it using git
+[download](https://github.com/dreitagebart/crispyScrum/archive/master.zip) this repository __or__ install it using git:
 
 ```bash
 git clone https://github.com/dreitagebart/crispyScrum.git
@@ -27,7 +27,7 @@ this command installs all dependencies via npm. After this is completed, you can
 ```bash
 npm run build
 ```
-_the build command watches for changes when you might change some relevant source code._
+> _the build command watches for changes when you might change some relevant source code._
 
 ---
 
