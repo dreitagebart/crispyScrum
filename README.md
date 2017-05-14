@@ -7,7 +7,7 @@ my crispy unopinionated scrum app
 ## Requirements
 
  - you should have installed the latest version of [node](https://nodejs.org) and [npm](https://www.npmjs.com/)
- 
+ - a running mongoDB instance with a connection to _crispyScrum_
 
 ## Installation
 
@@ -43,15 +43,23 @@ This app is using such awesome tools like:
 - [React](https://facebook.github.io/react)
 - [React-DND](http://react-dnd.github.io/react-dnd)
 - [Electron](https://electron.atom.io)
+- [Express](http://expressjs.com)
 - [Ant Design](https://ant.design)
 - [Redux](http://redux.js.org)
 - [Webpack](https://webpack.js.org)
 - [Babel](babeljs.io)
 - [React-Router](https://github.com/ReactTraining/react-router)
+- [Mongo DB](https://www.mongodb.com)
+- [mongoose](http://mongoosejs.com)
 - [moment-js](http://momentjs.com)
+- [Robomongo](https://robomongo.org)
 
 ## To dos
 
  - Authentication system
  - i18n 
  - ...
+
+ ## License
+
+ This app is licensed under [MIT](https://choosealicense.com/licenses/mit)
