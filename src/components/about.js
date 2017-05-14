@@ -20,7 +20,7 @@ class About extends React.Component {
   }
 
   _handleLicense = () => {
-    shell.openExternal('https://choosealicense.com/licenses/mit/')
+    shell.openExternal('https://github.com/dreitagebart/crispyScrum/blob/master/LICENSE')
   }
 
   render () {

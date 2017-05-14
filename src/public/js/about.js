@@ -26777,7 +26777,7 @@ var About = function (_React$Component) {
     }, _this._handleAuthor = function () {
       shell.openExternal('http://mindreport.com');
     }, _this._handleLicense = function () {
-      shell.openExternal('https://choosealicense.com/licenses/mit/');
+      shell.openExternal('https://github.com/dreitagebart/crispyScrum/blob/master/LICENSE');
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 

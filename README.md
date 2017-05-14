@@ -58,8 +58,10 @@ This app is using such awesome tools like:
 ## To dos
 
  - Authentication system
- - i18n 
- - bugfixing
+ - i18n
+ - task bar icon
+ - ~~task detaching~~
+ - ~~bugfixing~~
  - bugfixing
  - testing
  - ...
